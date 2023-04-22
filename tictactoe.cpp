@@ -19,6 +19,18 @@ void drawGrid(int grid[3][3]) {
    std::cout << "-------------\n";
 }
 
+void drawValues(int grid[3][3]) {
+   for (int i = 0; i < 3; ++i) {
+      std::cout << "-------------\n";
+      std::cout << "| ";
+      for (int j = 0; j < 3; ++j) {
+         std::cout << grid[i][j] << " | ";
+      }
+   }
+   std::cout << "\n";
+   std::cout << "-------------\n";
+}
+
 int askSquare() {
    int square{};
    std::cout << "\nChoose a square: ";
@@ -34,11 +46,18 @@ int askSquare() {
    return square;
 }
 
-void setSquare(int grid[3][3], int square, int player) {
-   if (square < 1 || square > 9) {
-      std::cout << "Not a valid square.\n";
-   } else {
-      grid[square / 3][square % 3 - 1] = player;
+void setSquare(int grid[3][3], int player) {
+   while (true) {
+      std::cout << "Turn Player " << player << ":";
+      int square = askSquare();
+      if (square < 1 || square > 9) {
+         std::cout << "Not a valid square.\n";
+      } else if (grid[square / 3][(square % 3) - 1] == 0) {
+         grid[square / 3][square % 3 - 1] = player;
+         return;
+      } else {
+         std::cout << "Square already taken.\n";
+      }
    }
 }
 
@@ -72,11 +91,22 @@ int checkWinner(int grid[3][3]) {
       }
    }
 
-   if (grid[0][0] == grid[1][1] == grid[2][2] || grid[0][2] == grid[2][0] == grid[1][1]) {
+   // checking diagonals
+   if ((grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2]) || (grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0])) {
+      drawValues(grid);
       return grid[1][1];
+   } else {
+      // checking for a draw
+      for (int i = 0; i < 3; ++i) {
+         for (int j = 0; j < 3; ++j) {
+            if (grid[i][j] == 0) {
+               return 0;  // no one win and there are possible moves to do.
+            }
+         }
+      }
+      std::cout << "We draw \n";
+      return 3;  // it means they draw
    }
-
-   return 0;
 }
 
 int main() {
@@ -85,17 +115,28 @@ int main() {
    // 2 it has an O.
    int grid[3][3]{0};
 
+   int turn = 0;
+
    while (true) {
+      int player = (turn % 2) + 1;
       drawGrid(grid);
 
-      int square = askSquare();
+      setSquare(grid, player);
 
-      setSquare(grid, square, 1);
-
-      if (checkWinner(grid) != 0) {
-         drawGrid(grid);
-         std::cout << "Wow someone won\n";
-         return 0;
+      switch (checkWinner(grid)) {
+         case 1:
+         case 2:
+            drawGrid(grid);
+            std::cout << "Player " << player << " won!\n";
+            return 0;
+            break;
+         case 3:
+            drawGrid(grid);
+            std::cout << "Draw.\n";
+            return 0;
+            break;
       }
+
+      ++turn;
    }
 }
