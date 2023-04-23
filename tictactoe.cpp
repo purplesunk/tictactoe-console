@@ -162,17 +162,98 @@ void computerPlayer(int grid[3][3]) {
          }
       }
    } else {
+      // check if there's a winning move
+      for (int i = 0; i < 3; ++i) {
+         int rowsWinning = 0;
+         int columnsWinning = 0;
+
+         for (int j = 0; j < 3; ++j) {
+            if (grid[i][j] == 2) {
+               ++rowsWinning;
+            }
+
+            if (grid[j][i] == 2) {
+               ++columnsWinning;
+            }
+         }
+
+         if (rowsWinning == 2) {
+            for (int x = 0; x < 3; ++x) {
+               if (grid[i][x] == 0) {
+                  grid[i][x] = 2;
+                  return;
+               }
+            }
+         }
+
+         if (columnsWinning == 2) {
+            for (int x = 0; x < 3; ++x) {
+               if (grid[x][i] == 0) {
+                  grid[x][i] = 2;
+                  return;
+               }
+            }
+         }
+
+         // Check for winning diagonals
+         int diagonalWin = 0;
+         for (int x = 0; x < 3; ++x) {
+            if (grid[x][x] == 2) {
+               ++diagonalWin;
+            }
+         }
+
+         if (diagonalWin == 2) {
+            for (int x = 0; x < 3; ++x) {
+               if (grid[x][x] == 0) {
+                  grid[x][x] = 2;
+                  return;
+               }
+            }
+         }
+
+         diagonalWin = 0;
+         if (grid[0][2] == 2) {
+            ++diagonalWin;
+         }
+         if (grid[1][1] == 2) {
+            ++diagonalWin;
+         }
+         if (grid[2][0] == 2) {
+            ++diagonalWin;
+         }
+
+         if (diagonalWin == 2) {
+            if (grid[0][2] == 0) {
+               grid[0][2] = 2;
+               return;
+            }
+            if (grid[1][1] == 0) {
+               grid[1][1] = 2;
+               return;
+            }
+            if (grid[2][0] == 0) {
+               grid[2][0] = 2;
+               return;
+            }
+         }
+      }
+
+      // Try to not let the other player win
       for (int i = 0; i < 3; ++i) {
          int rowsTaken = 0;
          int columnsTaken = 0;
+
          for (int j = 0; j < 3; ++j) {
             if (grid[i][j] == 1) {
                ++rowsTaken;
             }
+
             if (grid[j][i] == 1) {
                ++columnsTaken;
             }
          }
+
          if (rowsTaken == 2) {
             for (int x = 0; x < 3; ++x) {
                if (grid[i][x] == 0) {
@@ -181,6 +262,7 @@ void computerPlayer(int grid[3][3]) {
                }
             }
          }
+
          if (columnsTaken == 2) {
             for (int x = 0; x < 3; ++x) {
                if (grid[x][i] == 0) {
@@ -191,7 +273,52 @@ void computerPlayer(int grid[3][3]) {
          }
       }
 
-      // we need to check for winning positions and diagonals
+      // we need to check for diagonals
+      int diagonalTaken = 0;
+      for (int x = 0; x < 3; ++x) {
+         if (grid[x][x] == 1) {
+            ++diagonalTaken;
+         }
+      }
+
+      if (diagonalTaken == 2) {
+         for (int x = 0; x < 3; ++x) {
+            if (grid[x][x] == 0) {
+               grid[x][x] = 2;
+               return;
+            }
+         }
+      }
+
+      diagonalTaken = 0;
+      if (grid[0][2] == 1) {
+         ++diagonalTaken;
+      }
+      if (grid[1][1] == 1) {
+         ++diagonalTaken;
+      }
+      if (grid[2][0] == 1) {
+         ++diagonalTaken;
+      }
+
+      if (diagonalTaken == 2) {
+         if (grid[0][2] == 0) {
+            grid[0][2] = 2;
+            return;
+         }
+         if (grid[1][1] == 0) {
+            grid[1][1] = 2;
+            return;
+         }
+         if (grid[2][0] == 0) {
+            grid[2][0] = 2;
+            return;
+         }
+      }
+
+      // if no winning or saving move just use an empty one.
+      *ptrEmptySqr = 2;
+      return;
    }
 }
 
