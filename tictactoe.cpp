@@ -213,6 +213,7 @@ void computerPlayer(int grid[3][3]) {
          }
 
          diagonalWin = 0;
+         /*
          if (grid[0][2] == 2) {
             ++diagonalWin;
          }
@@ -235,6 +236,24 @@ void computerPlayer(int grid[3][3]) {
             if (grid[2][0] == 0) {
                grid[2][0] = 2;
                return;
+            }
+         }
+         */
+
+         int *diagonal[3] = {&grid[0][2], &grid[1][1], &grid[2][0]};
+
+         for (int x = 0; x < 3; ++x) {
+            if (*diagonal[x] == 2) {
+               ++diagonalWin;
+            }
+         }
+
+         if (diagonalWin == 2) {
+            for (int x = 0; x < 3; ++x) {
+               if (*diagonal[x] == 0) {
+                  *diagonal[x] = 2;
+                  return;
+               }
             }
          }
       }
@@ -273,7 +292,7 @@ void computerPlayer(int grid[3][3]) {
          }
       }
 
-      // we need to check for diagonals
+      // Check for diagonals
       int diagonalTaken = 0;
       for (int x = 0; x < 3; ++x) {
          if (grid[x][x] == 1) {
@@ -291,6 +310,7 @@ void computerPlayer(int grid[3][3]) {
       }
 
       diagonalTaken = 0;
+      /*
       if (grid[0][2] == 1) {
          ++diagonalTaken;
       }
@@ -313,6 +333,24 @@ void computerPlayer(int grid[3][3]) {
          if (grid[2][0] == 0) {
             grid[2][0] = 2;
             return;
+         }
+      }
+      */
+
+      int *diagonal[3] = {&grid[0][2], &grid[1][1], &grid[2][0]};
+
+      for (int x = 0; x < 3; ++x) {
+         if (*diagonal[x] == 1) {
+            ++diagonalTaken;
+         }
+      }
+
+      if (diagonalTaken == 2) {
+         for (int x = 0; x < 3; ++x) {
+            if (*diagonal[x] == 0) {
+               *diagonal[x] = 2;
+               return;
+            }
          }
       }
 
