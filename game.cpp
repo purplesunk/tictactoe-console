@@ -213,32 +213,6 @@ void computerPlayer(int grid[3][3]) {
          }
 
          diagonalWin = 0;
-         /*
-         if (grid[0][2] == 2) {
-            ++diagonalWin;
-         }
-         if (grid[1][1] == 2) {
-            ++diagonalWin;
-         }
-         if (grid[2][0] == 2) {
-            ++diagonalWin;
-         }
-
-         if (diagonalWin == 2) {
-            if (grid[0][2] == 0) {
-               grid[0][2] = 2;
-               return;
-            }
-            if (grid[1][1] == 0) {
-               grid[1][1] = 2;
-               return;
-            }
-            if (grid[2][0] == 0) {
-               grid[2][0] = 2;
-               return;
-            }
-         }
-         */
 
          int *diagonal[3] = {&grid[0][2], &grid[1][1], &grid[2][0]};
 
@@ -310,32 +284,6 @@ void computerPlayer(int grid[3][3]) {
       }
 
       diagonalTaken = 0;
-      /*
-      if (grid[0][2] == 1) {
-         ++diagonalTaken;
-      }
-      if (grid[1][1] == 1) {
-         ++diagonalTaken;
-      }
-      if (grid[2][0] == 1) {
-         ++diagonalTaken;
-      }
-
-      if (diagonalTaken == 2) {
-         if (grid[0][2] == 0) {
-            grid[0][2] = 2;
-            return;
-         }
-         if (grid[1][1] == 0) {
-            grid[1][1] = 2;
-            return;
-         }
-         if (grid[2][0] == 0) {
-            grid[2][0] = 2;
-            return;
-         }
-      }
-      */
 
       int *diagonal[3] = {&grid[0][2], &grid[1][1], &grid[2][0]};
 
