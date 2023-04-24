@@ -1,346 +1,113 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
-#include <limits>
 
-void clearConsole() {
-   std::cout << "\033[2J\033[1;1H";
-}
+#include "computer.h"
+#include "tictactoe.h"
+#include "utils.h"
 
-void drawGrid(int grid[3][3]) {
-   for (int i = 0; i < 3; ++i) {
-      std::cout << "-------------\n";
-      std::cout << "| ";
-      for (int j = 0; j < 3; ++j) {
-         if (grid[i][j] == 1) {
-            std::cout << "X | ";
-         } else if (grid[i][j] == 2) {
-            std::cout << "O | ";
-         } else {
-            std::cout << (i * 3) + (j + 1) << " | ";
-         }
-      }
-      std::cout << "\n";
-   }
-   std::cout << "-------------\n";
-}
-
-void drawValues(int grid[3][3]) {
-   for (int i = 0; i < 3; ++i) {
-      std::cout << "-------------\n";
-      std::cout << "| ";
-      for (int j = 0; j < 3; ++j) {
-         std::cout << grid[i][j] << " | ";
-      }
-   }
-   std::cout << "\n";
-   std::cout << "-------------\n";
-}
-
-int askSquare() {
-   int square{};
-   std::cout << "\nChoose a square: ";
-   std::cin >> square;
-
-   while (!std::cin) {
-      std::cin.clear();
-      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      std::cout << "Choose a square: ";
-      std::cin >> square;
-   }
-
-   return square;
-}
-
-void setSquare(int grid[3][3], int player) {
-   while (true) {
-      std::cout << "Turn Player " << player << ":";
-      int square = askSquare();
-      if (square < 1 || square > 9) {
-         std::cout << "Not a valid square.\n";
-      } else if (grid[square / 3][(square % 3) - 1] == 0) {
-         grid[square / 3][square % 3 - 1] = player;
-         return;
-      } else {
-         std::cout << "Square already taken.\n";
-      }
-   }
-}
-
-int checkWinner(int grid[3][3]) {
-   for (int i = 0; i < 3; ++i) {
-      int row = 1;
-      int column = 1;
-
-      // They will be only 0, 1 or 2.
-      int rowBefore = -1;
-      int columnBefore = -1;
-
-      for (int j = 0; j < 3; ++j) {
-         // Check row
-         if (grid[i][j] == rowBefore) {
-            ++row;
-         }
-         rowBefore = grid[i][j];
-         if (row == 3) {
-            return rowBefore;
-         }
-
-         // Check column
-         if (grid[j][i] == columnBefore) {
-            ++column;
-         }
-         columnBefore = grid[j][i];
-         if (column == 3) {
-            return columnBefore;
-         }
-      }
-   }
-
-   // checking diagonals
-   if ((grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2]) || (grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0])) {
-      return grid[1][1];
-   } else {
-      // checking for a draw
-      for (int i = 0; i < 3; ++i) {
-         for (int j = 0; j < 3; ++j) {
-            if (grid[i][j] == 0) {
-               return 0;  // no one win and there are possible moves to do.
-            }
-         }
-      }
-      return 3;  // it means they draw
-   }
-}
-
-void computerPlayer(int grid[3][3]) {
-   int emptySquares = 0;
-   int *ptrEmptySqr{};
-   int playerSquares = 0;
-   int playerSqrPos[2]{};
-
-   for (int i = 0; i < 3; ++i) {
-      for (int j = 0; j < 3; ++j) {
-         if (grid[i][j] == 0) {
-            ++emptySquares;
-            ptrEmptySqr = &grid[i][j];
-         } else if (grid[i][j] == 1) {
-            ++playerSquares;
-            playerSqrPos[0] = i;
-            playerSqrPos[1] = j;
-         }
-      }
-   }
-
-   if (emptySquares == 1) {
-      *ptrEmptySqr = 2;
-      return;
-   }
-
-   if (playerSquares == 1) {
-      if (grid[1][1] == 0) {
-         grid[1][1] = 2;
-         return;
-      } else {
-         switch (rand() % 2) {
-            case 0: {
-               for (int i = 0; i < 3; ++i) {
-                  if (grid[playerSqrPos[0]][i] == 0) {
-                     grid[playerSqrPos[0]][i] = 2;
-                     return;
-                  }
-               }
-            } break;
-            case 1: {
-               for (int i = 0; i < 3; ++i) {
-                  if (grid[i][playerSqrPos[1]] == 0) {
-                     grid[i][playerSqrPos[1]] = 2;
-                     return;
-                  }
-               }
-            } break;
-         }
-      }
-   } else {
-      // check if there's a winning move
-      for (int i = 0; i < 3; ++i) {
-         int rowsWinning = 0;
-         int columnsWinning = 0;
-
-         for (int j = 0; j < 3; ++j) {
-            if (grid[i][j] == 2) {
-               ++rowsWinning;
-            }
-
-            if (grid[j][i] == 2) {
-               ++columnsWinning;
-            }
-         }
-
-         if (rowsWinning == 2) {
-            for (int x = 0; x < 3; ++x) {
-               if (grid[i][x] == 0) {
-                  grid[i][x] = 2;
-                  return;
-               }
-            }
-         }
-
-         if (columnsWinning == 2) {
-            for (int x = 0; x < 3; ++x) {
-               if (grid[x][i] == 0) {
-                  grid[x][i] = 2;
-                  return;
-               }
-            }
-         }
-
-         // Check for winning diagonals
-         int diagonalWin = 0;
-         for (int x = 0; x < 3; ++x) {
-            if (grid[x][x] == 2) {
-               ++diagonalWin;
-            }
-         }
-
-         if (diagonalWin == 2) {
-            for (int x = 0; x < 3; ++x) {
-               if (grid[x][x] == 0) {
-                  grid[x][x] = 2;
-                  return;
-               }
-            }
-         }
-
-         diagonalWin = 0;
-
-         int *diagonal[3] = {&grid[0][2], &grid[1][1], &grid[2][0]};
-
-         for (int x = 0; x < 3; ++x) {
-            if (*diagonal[x] == 2) {
-               ++diagonalWin;
-            }
-         }
-
-         if (diagonalWin == 2) {
-            for (int x = 0; x < 3; ++x) {
-               if (*diagonal[x] == 0) {
-                  *diagonal[x] = 2;
-                  return;
-               }
-            }
-         }
-      }
-
-      // Try to not let the other player win
-      for (int i = 0; i < 3; ++i) {
-         int rowsTaken = 0;
-         int columnsTaken = 0;
-
-         for (int j = 0; j < 3; ++j) {
-            if (grid[i][j] == 1) {
-               ++rowsTaken;
-            }
-
-            if (grid[j][i] == 1) {
-               ++columnsTaken;
-            }
-         }
-
-         if (rowsTaken == 2) {
-            for (int x = 0; x < 3; ++x) {
-               if (grid[i][x] == 0) {
-                  grid[i][x] = 2;
-                  return;
-               }
-            }
-         }
-
-         if (columnsTaken == 2) {
-            for (int x = 0; x < 3; ++x) {
-               if (grid[x][i] == 0) {
-                  grid[x][i] = 2;
-                  return;
-               }
-            }
-         }
-      }
-
-      // Check for diagonals
-      int diagonalTaken = 0;
-      for (int x = 0; x < 3; ++x) {
-         if (grid[x][x] == 1) {
-            ++diagonalTaken;
-         }
-      }
-
-      if (diagonalTaken == 2) {
-         for (int x = 0; x < 3; ++x) {
-            if (grid[x][x] == 0) {
-               grid[x][x] = 2;
-               return;
-            }
-         }
-      }
-
-      diagonalTaken = 0;
-
-      int *diagonal[3] = {&grid[0][2], &grid[1][1], &grid[2][0]};
-
-      for (int x = 0; x < 3; ++x) {
-         if (*diagonal[x] == 1) {
-            ++diagonalTaken;
-         }
-      }
-
-      if (diagonalTaken == 2) {
-         for (int x = 0; x < 3; ++x) {
-            if (*diagonal[x] == 0) {
-               *diagonal[x] = 2;
-               return;
-            }
-         }
-      }
-
-      // if no winning or saving move just use an empty one.
-      *ptrEmptySqr = 2;
-      return;
-   }
-}
+void playComputer();
+void twoPlayer();
 
 int main() {
-   srand(time(NULL));
-   // When the grid has a 0 it's empty
-   // 1 it has an X.
-   // 2 it has an O.
-   int grid[3][3]{0};
+    srand(time(NULL));
 
-   int turn = 0;
-   int player = 1;
+    int option = 0;
+    while (true) {
+        clearConsole();
+        std::cout << "----------------------\n";
+        std::cout << "    TIC TAC TOE\n";
+        std::cout << "----------------------\n";
+        std::cout << "1. PLAY VS COMPUTER\n";
+        std::cout << "2. TWO PLAYER\n";
+        std::cout << "0. EXIT\n";
+        std::cout << "----------------------\n";
 
-   while (true) {
-      drawGrid(grid);
+        option = getInteger("OPTION: ");
 
-      if (turn % 2 == 0) {
-         setSquare(grid, player);
-      } else {
-         computerPlayer(grid);
-      }
+        switch (option) {
+            case 1:
+                playComputer();
+                break;
+            case 2:
+                twoPlayer();
+                break;
+            case 0:
+                return 0;
+                break;
+        }
+        pause();
+    }
+}
 
-      switch (checkWinner(grid)) {
-         case 1:
-         case 2:
-            drawGrid(grid);
-            std::cout << "Player " << checkWinner(grid) << " won!\n";
-            return 0;
-            break;
-         case 3:
-            drawGrid(grid);
-            std::cout << "Draw.\n";
-            return 0;
-            break;
-      }
+void twoPlayer() {
+    // When the grid has a 0 it's empty
+    // 1 it has an X.
+    // 2 it has an O.
+    int grid[3][3]{0};
 
-      ++turn;
-   }
+    int turn = 0;
+    int player = 0;
+
+    while (true) {
+        clearConsole();
+        drawGrid(grid);
+
+        player = (turn % 2) + 1;
+        setSquare(grid, player);
+
+        switch (checkWinner(grid)) {
+            case 1:
+            case 2:
+                drawGrid(grid);
+                std::cout << "Player " << player << " won!\n";
+                return;
+                break;
+            case 3:
+                drawGrid(grid);
+                std::cout << "Draw.\n";
+                return;
+                break;
+        }
+
+        ++turn;
+    }
+}
+
+void playComputer() {
+    // When the grid has a 0 it's empty
+    // 1 it has an X.
+    // 2 it has an O.
+    int grid[3][3]{0};
+
+    int turn = 0;
+    int winner = 0;
+
+    while (true) {
+        clearConsole();
+        drawGrid(grid);
+
+        if (turn % 2 == 0) {
+            setSquare(grid, 1);
+        } else {
+            computerPlayer(grid);
+        }
+
+        winner = checkWinner(grid);
+        switch (winner) {
+            case 1:
+            case 2:
+                drawGrid(grid);
+                std::cout << "Player " << winner << " won!\n";
+                return;
+                break;
+            case 3:
+                drawGrid(grid);
+                std::cout << "Draw.\n";
+                return;
+                break;
+        }
+
+        ++turn;
+    }
 }
