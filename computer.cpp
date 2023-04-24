@@ -61,6 +61,8 @@ void computerPlayer(int grid[3][3]) {
         }
 
         // if no winning or saving move just use an empty one.
+	// i should check for diagonals that have the column and the row with some value
+	// because it's easy to win starting with 4 or 6 then going 2 
         *ptrEmptySqr = 2;
         return;
     }

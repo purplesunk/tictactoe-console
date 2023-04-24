@@ -96,12 +96,19 @@ void playComputer() {
         winner = checkWinner(grid);
         switch (winner) {
             case 1:
-            case 2:
+		clearConsole();
                 drawGrid(grid);
-                std::cout << "Player " << winner << " won!\n";
+                std::cout << "Player won!\n";
+                return;
+                break;
+            case 2:
+		clearConsole();
+                drawGrid(grid);
+                std::cout << "Computer won!\n";
                 return;
                 break;
             case 3:
+		clearConsole();
                 drawGrid(grid);
                 std::cout << "Draw.\n";
                 return;

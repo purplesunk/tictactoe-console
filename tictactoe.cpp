@@ -36,7 +36,7 @@ void drawValues(int grid[3][3]) {
 
 void setSquare(int grid[3][3], int player) {
     while (true) {
-        std::cout << "Turn Player " << player << ":";
+        std::cout << "Turn Player " << player << ":\n";
         int square = getInteger("Choose a square: ");
         if (square < 1 || square > 9) {
             std::cout << "Not a valid square.\n";
