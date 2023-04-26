@@ -2,7 +2,7 @@
 
 #include <cstdlib>
 
-void computerPlayer(int grid[3][3]) {
+void computerPlayer(int grid[3][3], int playerValue, int computerValue) {
     int emptySquares = 0;
     int *ptrEmptySqr{};
     int playerSquares = 0;
@@ -13,7 +13,7 @@ void computerPlayer(int grid[3][3]) {
             if (grid[i][j] == 0) {
                 ++emptySquares;
                 ptrEmptySqr = &grid[i][j];
-            } else if (grid[i][j] == 1) {
+            } else if (grid[i][j] == playerValue) {
                 ++playerSquares;
                 playerSqrPos[0] = i;
                 playerSqrPos[1] = j;
@@ -22,20 +22,20 @@ void computerPlayer(int grid[3][3]) {
     }
 
     if (emptySquares == 1) {
-        *ptrEmptySqr = 2;
+        *ptrEmptySqr = computerValue;
         return;
     }
 
     if (playerSquares == 1) {
         if (grid[1][1] == 0) {
-            grid[1][1] = 2;
+            grid[1][1] = computerValue;
             return;
         } else {
             switch (rand() % 2) {
                 case 0: {
                     for (int i = 0; i < 3; ++i) {
                         if (grid[playerSqrPos[0]][i] == 0) {
-                            grid[playerSqrPos[0]][i] = 2;
+                            grid[playerSqrPos[0]][i] = computerValue;
                             return;
                         }
                     }
@@ -43,7 +43,7 @@ void computerPlayer(int grid[3][3]) {
                 case 1: {
                     for (int i = 0; i < 3; ++i) {
                         if (grid[i][playerSqrPos[1]] == 0) {
-                            grid[i][playerSqrPos[1]] = 2;
+                            grid[i][playerSqrPos[1]] = computerValue;
                             return;
                         }
                     }
@@ -52,34 +52,32 @@ void computerPlayer(int grid[3][3]) {
         }
     } else {
         // check if there's a winning move
-        if (checkWinningMove(grid, 2)) {
+        if (checkWinningMove(grid, computerValue, computerValue)) {
             return;
         }
         // check if there's a move to prevent the other player to win
-        if (checkWinningMove(grid, 1)) {
+        if (checkWinningMove(grid, playerValue, computerValue)) {
             return;
         }
 
         // if no winning or saving move just use an empty one.
-	// i should check for diagonals that have the column and the row with some value
-	// because it's easy to win starting with 4 or 6 then going 2 
         *ptrEmptySqr = 2;
         return;
     }
 }
 
-bool checkWinningMove(int grid[3][3], int player) {
+bool checkWinningMove(int grid[3][3], int playerValue, int computerValue) {
     for (int i = 0; i < 3; ++i) {
         int rowsWinning = 0;
         int columnsWinning = 0;
 
         // Check if there are a row or a column with two of the same value
         for (int j = 0; j < 3; ++j) {
-            if (grid[i][j] == player) {
+            if (grid[i][j] == playerValue) {
                 ++rowsWinning;
             }
 
-            if (grid[j][i] == player) {
+            if (grid[j][i] == playerValue) {
                 ++columnsWinning;
             }
         }
@@ -87,7 +85,7 @@ bool checkWinningMove(int grid[3][3], int player) {
         if (rowsWinning == 2) {
             for (int x = 0; x < 3; ++x) {
                 if (grid[i][x] == 0) {
-                    grid[i][x] = 2;
+                    grid[i][x] = computerValue;
                     return true;
                 }
             }
@@ -96,7 +94,7 @@ bool checkWinningMove(int grid[3][3], int player) {
         if (columnsWinning == 2) {
             for (int x = 0; x < 3; ++x) {
                 if (grid[x][i] == 0) {
-                    grid[x][i] = 2;
+                    grid[x][i] = computerValue;
                     return true;
                 }
             }
@@ -105,7 +103,7 @@ bool checkWinningMove(int grid[3][3], int player) {
         // Check diagonals
         int diagonalWin = 0;
         for (int x = 0; x < 3; ++x) {
-            if (grid[x][x] == player) {
+            if (grid[x][x] == playerValue) {
                 ++diagonalWin;
             }
         }
@@ -113,7 +111,7 @@ bool checkWinningMove(int grid[3][3], int player) {
         if (diagonalWin == 2) {
             for (int x = 0; x < 3; ++x) {
                 if (grid[x][x] == 0) {
-                    grid[x][x] = 2;
+                    grid[x][x] = computerValue;
                     return true;
                 }
             }
@@ -123,7 +121,7 @@ bool checkWinningMove(int grid[3][3], int player) {
         int *diagonal[3] = {&grid[0][2], &grid[1][1], &grid[2][0]};
 
         for (int x = 0; x < 3; ++x) {
-            if (*diagonal[x] == player) {
+            if (*diagonal[x] == playerValue) {
                 ++diagonalWin;
             }
         }
@@ -131,7 +129,7 @@ bool checkWinningMove(int grid[3][3], int player) {
         if (diagonalWin == 2) {
             for (int x = 0; x < 3; ++x) {
                 if (*diagonal[x] == 0) {
-                    *diagonal[x] = 2;
+                    *diagonal[x] = computerValue;
                     return true;
                 }
             }
